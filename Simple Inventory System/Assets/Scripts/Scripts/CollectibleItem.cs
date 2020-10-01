@@ -7,6 +7,7 @@ public class CollectibleItem : MonoBehaviour
     [SerializeField]
     private ItemObject _item;
     public ItemObject Item { get { return _item; } }
+
     [SerializeField]
     private int _itemAmount;
     public int ItemAmount
@@ -49,12 +50,11 @@ public class CollectibleItem : MonoBehaviour
         {
             // If so, meaning we left backpack boundaries - set target to null
             targetBackpack = null;
-            Debug.Log("Exited Backpack");
         }
     }
     private void OnMouseUp()
     {
-        // Check for potential target and free space
+        // Check for potential target and free space in it
         if (this.targetBackpack != null && this.targetBackpack.HasPlace)
         {
             // Add current item to the backpack 

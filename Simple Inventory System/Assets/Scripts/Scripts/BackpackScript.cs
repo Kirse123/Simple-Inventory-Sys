@@ -6,18 +6,20 @@ using UnityEngine.EventSystems;
 public class BackpackScript : MonoBehaviour
 {
     [SerializeField]
+    private MeshRenderer _meshRenderer;
+    [SerializeField]
     private Material greenMaterial;
     [SerializeField]
     private Material redMaterial;
     private Material defaultMaterial;
 
+    // Reference to trigger collider
     private Collider _collider;
 
+    // Potential item to collect
     private CollectibleItem _targetCollectibleItem;
 
-    [SerializeField]
-    private MeshRenderer _meshRenderer;
-
+    // Slots for snaping item
     [SerializeField]
     private BackpackSlot _weaponSlot;
     public BackpackSlot WeaponSlot
@@ -27,7 +29,6 @@ public class BackpackScript : MonoBehaviour
             return _weaponSlot;
         }
     }
-
     [SerializeField]
     private BackpackSlot _armorSlot;
     public BackpackSlot ArmorSlot
@@ -37,7 +38,6 @@ public class BackpackScript : MonoBehaviour
             return _armorSlot;
         }
     }
-
     [SerializeField]
     private BackpackSlot _consumablesSlot;
     public BackpackSlot ConsumablesSlot
@@ -48,15 +48,19 @@ public class BackpackScript : MonoBehaviour
         }
     }
 
+    // Point in space for dropping removed items
     [SerializeField]
     private GameObject dropPoint;
 
+    // Reference to Backpack UI window
     [SerializeField]
     private BackpackUI UIWindow;
 
+    // Backpack storage layout. Used when creating new backpack
     [SerializeField]
     private BackpackLayout backpackLayout;
 
+    // Main item storage
     private Backpack _backpack;
     public Backpack Backpack
     {
@@ -66,6 +70,8 @@ public class BackpackScript : MonoBehaviour
         }
     }
 
+    //Variable to flag drag&drop events
+    private bool isDraging = false;
     private bool _hasPlace;
     public bool HasPlace
     {
@@ -75,19 +81,10 @@ public class BackpackScript : MonoBehaviour
         }
     }
 
-    private bool isDraging = false;
-
-    private Dictionary<ItemType, BackpackSlot> getBackpackSlots;
-
     private void Start()
     {
         _backpack = new SimpleBackpack(backpackLayout);
         _collider = GetComponent<Collider>();
-
-        getBackpackSlots = new Dictionary<ItemType, BackpackSlot>();
-        getBackpackSlots.Add(ItemType.Weapon, _weaponSlot);
-        getBackpackSlots.Add(ItemType.Armor, _armorSlot);
-        getBackpackSlots.Add(ItemType.Consumable, _consumablesSlot);
 
         gameObject.tag = "Backpack";
         defaultMaterial = _meshRenderer.material;
@@ -96,14 +93,7 @@ public class BackpackScript : MonoBehaviour
         EventManager.instance.ItemRemoved.AddListener(DropItem);
     }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "CollectibleItem")
-        {
-            _meshRenderer.material = defaultMaterial;
-        }
-    }
-
+    // Check if there is free space for the item and set appropriate material as highlight
     public void CheckPlace(CollectibleItem collectibleItem)
     {
         _hasPlace = _backpack.CheckPlace(collectibleItem.Item, collectibleItem.ItemAmount);
@@ -112,11 +102,24 @@ public class BackpackScript : MonoBehaviour
         else
             _meshRenderer.material = redMaterial;
     }
+
+    // Restore default material when not colliding with collectible items
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "CollectibleItem")
+        {
+            _meshRenderer.material = defaultMaterial;
+        }
+    }
+
+    // Add collcetible to inventory
     public void AddItem(CollectibleItem collectibleItem)
     {
+        // Add item to inventory
         _backpack.AddItem(collectibleItem.Item, collectibleItem.ItemAmount);
         _meshRenderer.material = defaultMaterial;
 
+        // Get potential item-slnapping-slot
         var backpackSlot = GetBackpackSlot(collectibleItem.Item.Type);
 
         if (backpackSlot.isEmpty)
@@ -125,13 +128,17 @@ public class BackpackScript : MonoBehaviour
             return;
         }
 
-        // if we do not snap object, then put it in and destroy 
+        // if we do not snap object, then put it in inventory and destroy gameObject
         Destroy(collectibleItem.gameObject);
     }
+    
+    // Drops Item's gameObject. Is called on Event "ItemRemoved"
     public void DropItem(InventorySlot slot)
     {
+        // Get potential item-slnapping-slot
         var backpackSlot = GetBackpackSlot(slot.Item.Type);
 
+        // If dropping item is snapped to the slot
         if (slot.Item == backpackSlot.StoredItem.Item)
         {
             backpackSlot.UnsnapItem();
@@ -144,10 +151,9 @@ public class BackpackScript : MonoBehaviour
             return;
         }
 
-        // If there is different item in slot. then just drop this on the floor
+        // If there is different item in the slot, then just drop this one on the floor
         Instantiate(slot.Item.Prefab, dropPoint.transform.position, Quaternion.identity, null);
     }
-
 
     public void SetDraging()
     {
@@ -168,6 +174,7 @@ public class BackpackScript : MonoBehaviour
         UIWindow.gameObject.SetActive(false);
     }
 
+    // Returns appropriate item-snapping-slot for given item type
     private BackpackSlot GetBackpackSlot(ItemType type)
     {
         switch (type)

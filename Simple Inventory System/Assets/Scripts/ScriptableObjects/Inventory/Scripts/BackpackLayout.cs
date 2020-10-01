@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//This class is used for Backpack object generating
 [CreateAssetMenu(fileName = "New Backpack Layout", menuName = "Inventory System/Backpack Layout")]
 public class BackpackLayout : ScriptableObject
 {

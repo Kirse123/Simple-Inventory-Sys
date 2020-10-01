@@ -12,7 +12,6 @@ public interface IStorage
     void AddItem(ItemObject item, int amount);
     void RemoveItem(InventorySlot slot, int amount);
     void RemoveItem(InventorySlot slot);
-    void RemoveItem(int slotID, int amount);
     void RemoveItem(ItemObject item, int amount);
 }
 
@@ -53,21 +52,36 @@ public abstract class AbstractInventoryContainer : IStorage
         this._container = new List<InventorySlot>(this._slotsAmount);
     }
 
+    /// <summary>
+    /// Add item to inventory
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="amount"></param>
     public virtual void AddItem(ItemObject item, int amount = 1)
     {
         foreach (InventorySlot slot in _container)
         {
+            // Check if there is a slot with same item and enough space
             if (slot.Item.Identifier == item.Identifier && slot.availablePlace >= amount)
             {
+                // And in that slot new items
                 slot.ChangeAmount(amount);
+                // Call UnityEvent
                 EventManager.instance.ItemAdded.Invoke(slot);
                 return;
             }
         }
+        // There is no slot with same item and enough space, so we need new
         _container.Add(new InventorySlot(item, amount));
+        // Call UnityEvent
         EventManager.instance.ItemAdded.Invoke(_container[_container.Count - 1]);
     }
-
+    /// <summary>
+    /// Check place in the inventory for The item
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="amount"></param>
+    /// <returns></returns>
     public virtual bool CheckPlace(ItemObject item, int amount = 1)
     {
         // Check is there atleast 1 completly empty slot
@@ -85,22 +99,25 @@ public abstract class AbstractInventoryContainer : IStorage
         return false;
     }
 
-    public virtual void RemoveItem(InventorySlot slot, int amount)
-    {
-        throw new System.NotImplementedException();
-    }
-
+    /// <summary>
+    /// Remove slot from th einventory
+    /// </summary>
+    /// <param name="slot"></param>
     public virtual void RemoveItem(InventorySlot slot)
     {
         EventManager.instance.ItemRemoved.Invoke(slot);
         _container.Remove(slot);
     }
-
     public virtual void RemoveItem(int slotID, int amount)
     {
         _container[slotID].ChangeAmount(amount);
     }
 
+    // Possible extensions for inventory system
+    public virtual void RemoveItem(InventorySlot slot, int amount)
+    {
+        throw new System.NotImplementedException();
+    }
     public virtual void RemoveItem(ItemObject item, int amount)
     {
         throw new System.NotImplementedException();
@@ -154,7 +171,6 @@ public class InventorySlot
             return _item.MaxAmountInSlot - _amount;
         }
     }
-
 
     /// <summary>
     /// Create inventory slot with given amount of items, referenced to container

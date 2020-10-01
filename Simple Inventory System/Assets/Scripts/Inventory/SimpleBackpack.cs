@@ -22,7 +22,6 @@ public class SimpleBackpack : Backpack
     {
         _inventories[item.Type].AddItem(item, amount);
     }
-
     /// <summary>
     /// Check free space in the backpack for item
     /// </summary>
@@ -33,7 +32,6 @@ public class SimpleBackpack : Backpack
     {
         return _inventories[item.Type].CheckPlace(item, amount);
     }
-
     /// <summary>
     /// Remove item from backpack inventory
     /// </summary>

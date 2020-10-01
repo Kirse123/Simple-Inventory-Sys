@@ -23,7 +23,10 @@ public class MouseMoveableObj : MonoBehaviour
 
     private void OnMouseDown()
     {
+        // Current distance from camera to object
         distance = mainCamera.WorldToViewportPoint(gameObject.transform.position).z;
+
+        // Stop item rotaion and set speed to 0
         _rb.velocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
         _rb.isKinematic = true;
@@ -32,12 +35,11 @@ public class MouseMoveableObj : MonoBehaviour
     private void OnMouseDrag()
     {
         Vector3 power = (Input.mousePosition - mousePos);
+        
         // Obtain mouse position
         mousePos = Input.mousePosition;
         
         _rb.MovePosition(mainCamera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, distance)));
-
-        //gameObject.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, distance));
     }
 
     private void OnMouseUp()
@@ -45,11 +47,6 @@ public class MouseMoveableObj : MonoBehaviour
         _rb.isKinematic = false;
         _rb.velocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
-
-        Vector3 force = (Input.mousePosition - mousePos);
-        Debug.LogFormat("Force = {0}", force);
-
-        //_rb.velocity = force;
     }
 
     public void Toggle(bool value)

@@ -5,7 +5,7 @@ using UnityEngine;
 public class MagnetMovement : MonoBehaviour
 {
     [SerializeField]
-    private float _speed;
+    private float _speed = 3f;
     public float Speed
     {
         get
@@ -14,29 +14,35 @@ public class MagnetMovement : MonoBehaviour
         }
     }
 
-    private GameObject target;
+    private GameObject _target;
     public GameObject Target
     {
         get
         {
-            return target;
+            return _target;
         }
         set
         {
-            target = value;
+            _target = value;
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        Magnet();
+        Magnetize();
     }
 
-    public void Magnet()
+    // Magnetize gameObject to target with speed = _speed
+    public void Magnetize()
     {
-        if (Vector3.Distance(gameObject.transform.position, target.transform.position) > 0)
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, target.transform.position, _speed * Time.deltaTime);
+        if(_target == null)
+        {
+            return;
+        }
+
+        if (Vector3.Distance(gameObject.transform.position, _target.transform.position) > 0)
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, _target.transform.position, _speed * Time.deltaTime);
         else
             this.enabled = false;
     }

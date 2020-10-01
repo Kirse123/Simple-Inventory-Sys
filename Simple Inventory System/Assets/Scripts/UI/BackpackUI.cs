@@ -7,9 +7,10 @@ public class BackpackUI : MonoBehaviour
     [SerializeField]
     private GameObject inventoryPanelPrefab;
 
+    // Regerence to script
     public BackpackScript backpackScript;
 
-    // Refernces to inventoey field for updfate purposes
+    // Refernces to inventory field for update purposes
     private List<InventoryUI> inventoryFields;
 
     private void Awake()
@@ -31,7 +32,6 @@ public class BackpackUI : MonoBehaviour
             // Save reference to generated inventory fieled
             inventoryFields.Add(inventoryField);
         }
-
     }
 
     public void UpdateUI()

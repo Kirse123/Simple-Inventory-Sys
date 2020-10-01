@@ -6,6 +6,8 @@ public enum ItemType
     Weapon = 0,
     Consumable = 2
 }
+
+// Base class for storing item properties
 [System.Serializable]
 public abstract class ItemObject : ScriptableObject
 {
@@ -58,6 +60,7 @@ public abstract class ItemObject : ScriptableObject
     /// </summary>
     public float Weight { get { return _weight; } }
 
+    // Generate unique ID for the Item
     private void OnValidate()
     {
 #if UNITY_EDITOR

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Potential extension for inventory system
+/// </summary>
 [CreateAssetMenu(fileName = "New Data Base Object", menuName = "Inventory System/Data Base")]
 public class ItemDBObject : ScriptableObject, ISerializationCallbackReceiver
 {
@@ -15,6 +18,7 @@ public class ItemDBObject : ScriptableObject, ISerializationCallbackReceiver
 
     }
 
+    // Sets Items ID
     public void OnAfterDeserialize()
     {
         _getObjectByID = new Dictionary<string, ItemObject>();
@@ -24,11 +28,6 @@ public class ItemDBObject : ScriptableObject, ISerializationCallbackReceiver
         }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="ItemID"></param>
-    /// <returns></returns>
     public ItemObject GetItemByID(string ItemID)
     {
         return _getObjectByID[ItemID];

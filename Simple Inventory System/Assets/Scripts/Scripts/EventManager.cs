@@ -12,7 +12,7 @@ public class EventManager : MonoBehaviour
 {
     public static EventManager instance = null;
 
-    public ItemAddedEvent ItemRemoved;
+    public ItemRemovedEvent ItemRemoved;
     public ItemAddedEvent ItemAdded;
 
     // Start is called before the first frame update
@@ -33,17 +33,12 @@ public class EventManager : MonoBehaviour
         ItemRemoved.AddListener(OnItemRemovededConsole);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
+    // Debug methods 
     private void OnItemAddedConsole(InventorySlot slot)
     {
         Debug.LogFormat("{0} has been added", slot.Item.ItemName);
     }
-
     private void OnItemRemovededConsole(InventorySlot slot)
     {
         Debug.LogFormat("{0} has been removed", slot.Item.ItemName);

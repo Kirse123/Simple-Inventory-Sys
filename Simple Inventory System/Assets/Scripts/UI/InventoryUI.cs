@@ -8,7 +8,7 @@ public class InventoryUI : MonoBehaviour
     // Inventory container with storing data
     private AbstractInventoryContainer _inventory;
 
-    // All UISlots within
+    // All UISlots within the inventory field
     private UISlot[] _uiSlots;
 
     // UISlot prefab
@@ -19,6 +19,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField]
     private GameObject ParentUISlots;
 
+    // Caption for the field
     [SerializeField]
     private Text caption;
 
@@ -28,11 +29,12 @@ public class InventoryUI : MonoBehaviour
     public BackpackUI backpackUI;
 
     /// <summary>
-    /// Generate slots according to inventory
+    /// Generate slots according to the inventory given
     /// </summary>
-    /// <param name="inventory">Targetr inventory with data</param>
+    /// <param name="inventory">Target inventory with data</param>
     public void CreateInventoryUI(AbstractInventoryContainer inventory, ItemType type)
     {
+        // Set caption
         caption.text = type.ToString();
 
         _inventory = inventory;
@@ -44,7 +46,7 @@ public class InventoryUI : MonoBehaviour
             var obj = Instantiate(slotUIPrefab, ParentUISlots.transform);
             _uiSlots[i] = obj.GetComponent<UISlot>();
             // Set callback on click event
-            _uiSlots[i].OnUISlotClickedCallback = OnRemoveSlot;
+            _uiSlots[i].OnUISlotClickedCallback = OnRemoveSlotClicked;
         }
         UpdateUI();
     }
@@ -73,7 +75,7 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     /// <param name="slot"></param>
     /// <param name="eventData"></param>
-    public void OnRemoveSlot(InventorySlot slot)
+    public void OnRemoveSlotClicked(InventorySlot slot)
     {
         if(slot != null)
         {

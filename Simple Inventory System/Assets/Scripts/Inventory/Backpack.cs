@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public abstract class Backpack
 {
+    // Backpack layout for futher inventory generating
     private BackpackLayout _layout;
 
     protected Dictionary<ItemType, AbstractInventoryContainer> _inventories;

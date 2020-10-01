@@ -16,6 +16,7 @@ public class WebManager : MonoBehaviour
 
     private void Start()
     {
+        // Subscribe for events
         EventManager.instance.ItemAdded.AddListener(OnItemAdded);
         EventManager.instance.ItemRemoved.AddListener(OnItemRemoved);
     }
@@ -36,8 +37,8 @@ public class WebManager : MonoBehaviour
     /// <param name="ItemID"></param>
     public IEnumerator SendItemID(string url, string ItemID, PostMsgType msgType)
     {
-        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
-        
+        // Create msg Data
+        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();        
         switch (msgType)
         {
             case PostMsgType.Added:

@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 public class UISlot : MonoBehaviour
 {
     public delegate void OnUISlotClicked(InventorySlot slot);
+    // Callback for UISlot clicked
     public OnUISlotClicked OnUISlotClickedCallback;
 
     // Inventory slot, representet by this UISlot
@@ -54,17 +55,4 @@ public class UISlot : MonoBehaviour
     {
         _itemImage.color = Color.white;
     }
-
-    /*
-    /// <summary>
-    /// Remove item from inventory
-    /// </summary>
-    /// <param name="eventData"></param>
-    public void OnDrop(PointerEventData eventData)
-    {
-        Debug.LogFormat("Item {0} Droped", _inventorySlot.Item.ItemName);
-        if (this._inventorySlot != null)
-            OnUISlotClickedCallback(this._inventorySlot);
-    }
-    */
 }
