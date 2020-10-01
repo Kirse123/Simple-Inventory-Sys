@@ -59,7 +59,6 @@ public class CollectibleItem : MonoBehaviour
         {
             // Add current item to the backpack 
             targetBackpack.AddItem(this);
-            Destroy(this.gameObject);
         }
     }
 }

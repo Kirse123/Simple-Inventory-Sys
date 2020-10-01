@@ -7,12 +7,15 @@ public abstract class Backpack
 {
     private BackpackLayout _layout;
 
-    protected List<AbstractInventoryContainer> inventories;
-    public List<AbstractInventoryContainer> Inventories
+    protected Dictionary<ItemType, AbstractInventoryContainer> _inventories;
+    /// <summary>
+    /// Contains backpack inventorys
+    /// </summary>
+    public Dictionary<ItemType, AbstractInventoryContainer> Inventories
     {
         get
         {
-            return inventories;
+            return _inventories;
         }
     }
 
@@ -28,7 +31,9 @@ public abstract class Backpack
 
     public abstract void AddItem(ItemObject item, int amount);
 
-    public abstract void RemoveObject(ItemObject item, int amount);
+    public abstract void RemoveItem(ItemObject item, int amount);
+    public abstract void RemoveItem(InventorySlot slot, int amount);
+    public abstract void RemoveItem(InventorySlot slot);
 
     public abstract bool CheckPlace(ItemObject item, int amount);
 }

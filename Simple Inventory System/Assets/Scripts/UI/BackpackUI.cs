@@ -7,44 +7,39 @@ public class BackpackUI : MonoBehaviour
     [SerializeField]
     private GameObject inventoryPanelPrefab;
 
-    [SerializeField]
-    private BackpackScript backpackScript;
+    public BackpackScript backpackScript;
 
-    private List<InventoryUI> inventoryFlields;
+    // Refernces to inventoey field for updfate purposes
+    private List<InventoryUI> inventoryFields;
 
-    private bool _created;
-
-    private void Start()
+    private void Awake()
     {
-        inventoryFlields = new List<InventoryUI>();
+        inventoryFields = new List<InventoryUI>();
         CreateUI();
-    }
-
-    private void OnEnable()
-    {
-        if(_created)
-            UpdateUI();
     }
 
     private void CreateUI()
     {
-        foreach (AbstractInventoryContainer container in backpackScript.Backpack.Inventories)
+        foreach(var pair in backpackScript.Backpack.Inventories)
         {
-            // Instamtiate ui inventory filed
+            // Instantiate ui inventory fieled
             var obj = Instantiate(inventoryPanelPrefab, gameObject.transform);
-            InventoryUI invPanel = obj.GetComponent<InventoryUI>();
-            inventoryFlields.Add(invPanel);
+            InventoryUI inventoryField = obj.GetComponent<InventoryUI>();
+            inventoryField.backpackUI = this;
             // Generate slots for the field
-            invPanel.CreateInventoryUI(container);
+            inventoryField.CreateInventoryUI(pair.Value, pair.Key);
+            // Save reference to generated inventory fieled
+            inventoryFields.Add(inventoryField);
         }
-        _created = true;
+
     }
 
     public void UpdateUI()
     {
-        foreach (InventoryUI inventoryField in inventoryFlields)
+        Debug.Log("UI Updated");
+        foreach (InventoryUI inventoryUI in inventoryFields)
         {
-            inventoryField.UpdateUI();
+            inventoryUI.UpdateUI();
         }
     }
 }

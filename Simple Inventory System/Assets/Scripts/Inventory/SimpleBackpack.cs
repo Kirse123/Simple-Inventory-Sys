@@ -4,66 +4,60 @@ using UnityEngine;
 
 public class SimpleBackpack : Backpack
 {
-    //TODO: set inventory ID in inventories to ItemType value. Array??
     public SimpleBackpack(BackpackLayout layout) : base(layout)
     {
-        inventories = new List<AbstractInventoryContainer>();
-        // Set weapon slots
-        inventories.Add(new SimpleInventoryContainer(layout.WeaponSlotsAmount));
-        // Set ammo slots
-        inventories.Add(new SimpleInventoryContainer(layout.AmmoSlotsAmount));
-        // Set consumables slots
-        inventories.Add(new SimpleInventoryContainer(layout.ConsumablesSlotsAmount));
-    }
-    public override void AddItem(ItemObject item, int amount = 1)
-    {        
-        switch (item.Type)
+        _inventories = new Dictionary<ItemType, AbstractInventoryContainer>();
+        foreach (BackpackLayout.BackpackSlotLayout slotLayout in layout.BackpackSlots)
         {
-            case ItemType.weapon:
-                inventories[0].AddItem(item, amount);
-                break;
-            case ItemType.ammo:
-                inventories[1].AddItem(item, amount);
-                break;
-            case ItemType.consumable:
-                inventories[2].AddItem(item, amount);
-                break;
+            _inventories.Add(slotLayout.slotType, new SimpleInventoryContainer(slotLayout.slotCapacity));
         }
-
-        Debug.LogFormat("{0}({1}) has been added. ", item.ItemName, amount);
     }
 
+    /// <summary>
+    /// Add item to backpack
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="amount"></param>
+    public override void AddItem(ItemObject item, int amount = 1)
+    {
+        _inventories[item.Type].AddItem(item, amount);
+    }
+
+    /// <summary>
+    /// Check free space in the backpack for item
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="amount"></param>
+    /// <returns></returns>
     public override bool CheckPlace(ItemObject item, int amount = 1)
     {
-        switch (item.Type)
-        {
-            // Check place for each type stored in this backpack
-            case ItemType.weapon:
-                return inventories[0].CheckPlace(item, amount);              
-            case ItemType.ammo:
-                return inventories[1].CheckPlace(item, amount);
-            case ItemType.consumable:
-                return inventories[2].CheckPlace(item, amount);
-            // If not storing such type just return false
-            default:
-                return false;
-        }
+        return _inventories[item.Type].CheckPlace(item, amount);
     }
 
-    public override void RemoveObject(ItemObject item, int amount)
+    /// <summary>
+    /// Remove item from backpack inventory
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="amount"></param>
+    public override void RemoveItem(ItemObject item, int amount)
     {
-        switch (item.Type)
-        {
-            // Check place for each type stored in this backpack
-            case ItemType.weapon:
-                inventories[0].RemoveItem(item, amount);
-                break;
-            case ItemType.ammo:
-                inventories[0].RemoveItem(item, amount);
-                break;
-            case ItemType.consumable:
-                inventories[0].RemoveItem(item, amount);
-                break;
-        }
+        _inventories[item.Type].RemoveItem(item, amount);
+    }
+    /// <summary>
+    /// Remove item from backpack inventory
+    /// </summary>
+    /// <param name="slot"></param>
+    /// <param name="amount"></param>
+    public override void RemoveItem(InventorySlot slot, int amount)
+    {
+        _inventories[slot.Item.Type].RemoveItem(slot, amount);
+    }
+    /// <summary>
+    /// Remove item from backpack inventory
+    /// </summary>
+    /// <param name="slot"></param>
+    public override void RemoveItem(InventorySlot slot)
+    {
+        _inventories[slot.Item.Type].RemoveItem(slot);
     }
 }

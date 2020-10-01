@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
@@ -18,12 +19,22 @@ public class InventoryUI : MonoBehaviour
     [SerializeField]
     private GameObject ParentUISlots;
 
+    [SerializeField]
+    private Text caption;
+
+
+    // Parent UI window
+    [HideInInspector]
+    public BackpackUI backpackUI;
+
     /// <summary>
     /// Generate slots according to inventory
     /// </summary>
     /// <param name="inventory">Targetr inventory with data</param>
-    public void CreateInventoryUI(AbstractInventoryContainer inventory)
+    public void CreateInventoryUI(AbstractInventoryContainer inventory, ItemType type)
     {
+        caption.text = type.ToString();
+
         _inventory = inventory;
         _uiSlots = new UISlot[inventory.SlotsAmount];
 
@@ -62,8 +73,13 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     /// <param name="slot"></param>
     /// <param name="eventData"></param>
-    public void OnRemoveSlot(InventorySlot slot, UnityEngine.EventSystems.PointerEventData eventData)
+    public void OnRemoveSlot(InventorySlot slot)
     {
-        _inventory.RemoveItem(slot);
+        if(slot != null)
+        {
+            _inventory.RemoveItem(slot);
+            Debug.LogFormat("Item {0} removed", slot.Item.ItemName);
+        }
+        backpackUI.gameObject.SetActive(false);
     }
 }
